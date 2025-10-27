@@ -1,25 +1,65 @@
 import json
+import random
 import os
 
 class LangEncoding():
     def __init__(self):
         self.data = ''
+        self.words = ''
         with open("recources/json/langEncoding.json", 'r') as file:
             self.data = json.load(file)
-            print(self.data)
+
+        with open("recources/other/words.txt") as file:
+            self.words = file.read()
+
+        self.constantindexlist = []
+        self.vowelindexlist = []
+
+        self.length = 0
+
+    def Generate(self):
+        constantindexlist = self.constantindexlist
+        vowelindexlist = self.vowelindexlist
+
+        constants = self.data['Constants']
+        vowels = self.data['Vowels']
+
+        returnvalue = ''
+
+        usedindex = False
+
+        index = 0
+        while index < self.length:
+            for c in constantindexlist:
+                if index == c:
+                    usedindex = True
+                    returnvalue = f"{returnvalue}{constants[random.randint(0, constants.__len__() - 1)]}"
+
+            for v in vowelindexlist:
+                if index == v:
+                    usedindex = True
+                    returnvalue = f"{returnvalue}{vowels[random.randint(0, vowels.__len__() - 1)]}"
+
+            if not usedindex:
+                returnvalue = f"{returnvalue} "
+            usedindex = False
+            index += 1
 
     def Encode(self, string: str):
         index = 0
         letterindex = 0
         
-        constantindexlist = []
-        vowelindexlist = []
+        constantindexlist = self.constantindexlist
+        vowelindexlist = self.vowelindexlist
 
         constants = self.data['Constants']
         vowels = self.data['Vowels']
         for letter in string:
             letterindex = 0
-            checkstring = f'{string[index + 1]}'.upper
+            if index + 1 == len(string):
+                checkstring = string[index]
+            else:
+                checkstring = f'{string[index + 1]}'.upper
 
             isvowel = False
 
@@ -34,6 +74,7 @@ class LangEncoding():
                     for vowel in vowels:
                         if vowel == checkstring:
                             vowelindexlist.append(letterindex)
+                            isvowel = True
                             break
                 letterindex += 1
 
@@ -51,5 +92,20 @@ class LangEncoding():
                         break
                     letterindex += 1
                 index += 1
-        print(constantindexlist, vowelindexlist)
-LangEncoding().Encode(input("STRING: "))
+
+        self.length = string.__len__()
+        self.Generate()
+
+words = ''
+
+with open("recources/other/words.txt", 'r') as file:
+    words = file.read().split(f'\n')
+
+
+List = []
+
+for i in words:
+    List.append(LangEncoding().Encode(i))
+
+with open('recources/other/encodedWords.txt', "w") as file:
+    file.write(List.__str__())
