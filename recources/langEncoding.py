@@ -44,6 +44,7 @@ class LangEncoding():
                 returnvalue = f"{returnvalue} "
             usedindex = False
             index += 1
+        return returnvalue
 
     def Encode(self, string: str):
         index = 0
@@ -87,6 +88,11 @@ class LangEncoding():
                         vowel = vowel.lower()
                     else:
                         letter = letter.upper()
+                    if index != 0:
+                        letter = letter.lower()
+                        vowel = vowel.lower()
+                    else:
+                        letter = letter.upper()
                     if letter == vowel:
                         vowelindexlist.append(index)
                         break
@@ -94,12 +100,12 @@ class LangEncoding():
                 index += 1
 
         self.length = string.__len__()
-        self.Generate()
+        return self.Generate()
 
 words = ''
 
 with open("recources/other/words.txt", 'r') as file:
-    words = file.read().split(f'\n')
+    words = file.read().split(f',')
 
 
 List = []
