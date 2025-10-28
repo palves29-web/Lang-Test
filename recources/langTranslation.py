@@ -1,5 +1,9 @@
 import os
 
+def Slice(string: str, i1: int, i2: int):
+    returnvalue = string[:i1] + string[i2:]
+    return returnvalue
+
 class Translate():
     def __init__(self):
         self.fromlangpath = 'recources/other/words.txt'
@@ -20,16 +24,38 @@ class Translate():
             returnvalue = []
             finalreturnvalue = ''
             for word in string.split(' '):
+                newword = ''
                 index = 0
                 for w1 in self.fromlangcontent:
-                    if word.upper() == w1:
+                    if word[-1] == '.':
+                        newword = word.strip('.')
+                    else:
+                        newword = word
+                    if newword.upper() == w1:
                         returnvalue.append(self.tolangcontent[index])
+                        print(self.tolangcontent[index])
                         break
                     index += 1
+
+                if word[-1] == '.':
+                    returnvalue.append('.')
+
+            check = False
             for i in returnvalue.__str__():
-                if ord(i) >= 65 and ord(i) <= 90 or i == ' ':
+                if ord(i) >= 65 and ord(i) <= 90:
                     finalreturnvalue = f'{finalreturnvalue}{i}'
-            
+                if i == ' ' and not check:
+                    check = True
+                    finalreturnvalue = f'{finalreturnvalue}{i}'
+                elif i == '.':
+                    check = True
+                    finalreturnvalue = f'{finalreturnvalue}{i}'
+                elif i == ' ' and check: 
+                    check = False
+
+            if ' ' == returnvalue.__str__()[0]:
+                    finalreturnvalue = Slice(finalreturnvalue.__str__())
+
             with open(self.outputpath, 'w') as file:
                 file.write(finalreturnvalue)
 
