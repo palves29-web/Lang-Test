@@ -113,5 +113,14 @@ List = []
 for i in words:
     List.append(LangEncoding().Encode(i))
 
+returnValue = ''
+
+for i in List:
+    for l in i:
+        if ord(l) >= 65 and ord(l) <= 90:
+            returnValue = f'{returnValue}{l}'
+    if i != List[-1]:
+        returnValue = f'{returnValue},'
+
 with open('recources/other/encodedWords.txt', "w") as file:
-    file.write(List.__str__())
+    file.write(returnValue)
